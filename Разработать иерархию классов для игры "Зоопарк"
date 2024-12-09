@@ -1,0 +1,204 @@
+com.zoopark
+│
+├── animals
+│   ├── Animal.java
+│   ├── Mammal.java
+│   ├── Bird.java
+│   └── Reptile.java
+│
+├── food
+│   ├── Food.java
+│   ├── Grass.java
+│   └── Meat.java
+│
+└── enclosures
+    ├── Enclosure.java
+    ├── MammalEnclosure.java
+    └── BirdEnclosure.java
+
+Описание классов:
+1. Интерфейс Feedable
+Интерфейс для объектов, которые могут быть накормлены.
+
+java
+Копировать код
+package com.zoopark;
+
+public interface Feedable {
+    void feed(Food food);
+}
+2. Абстрактный класс Animal
+Это базовый класс для всех животных в зоопарке.
+
+java
+Копировать код
+package com.zoopark.animals;
+
+import com.zoopark.Food;
+import com.zoopark.Feedable;
+
+public abstract class Animal implements Feedable {
+    protected String name;
+    protected int age;
+
+    public Animal(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public abstract void makeSound();
+
+    @Override
+    public void feed(Food food) {
+        System.out.println(name + " is being fed " + food.getClass().getSimpleName());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+3. Конкретные классы животных
+Для примера создадим несколько классов животных: Mammal, Bird и Reptile.
+
+Класс Mammal:
+
+java
+Копировать код
+package com.zoopark.animals;
+
+public class Mammal extends Animal {
+    public Mammal(String name, int age) {
+        super(name, age);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " says: Roar!");
+    }
+}
+Класс Bird:
+
+java
+Копировать код
+package com.zoopark.animals;
+
+public class Bird extends Animal {
+    public Bird(String name, int age) {
+        super(name, age);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " says: Chirp!");
+    }
+}
+Класс Reptile:
+
+java
+Копировать код
+package com.zoopark.animals;
+
+public class Reptile extends Animal {
+    public Reptile(String name, int age) {
+        super(name, age);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " says: Hiss!");
+    }
+}
+4. Классы еды
+Абстрактный класс Food и конкретные классы еды.
+
+Класс Food:
+
+java
+Копировать код
+package com.zoopark;
+
+public abstract class Food {
+    protected String name;
+
+    public String getName() {
+        return name;
+    }
+}
+Класс Grass (еда для травоядных):
+
+java
+Копировать код
+package com.zoopark.food;
+
+import com.zoopark.Food;
+
+public class Grass extends Food {
+    public Grass() {
+        this.name = "Grass";
+    }
+}
+Класс Meat (еда для плотоядных):
+
+java
+Копировать код
+package com.zoopark.food;
+
+import com.zoopark.Food;
+
+public class Meat extends Food {
+    public Meat() {
+        this.name = "Meat";
+    }
+}
+5. Вольеры
+Абстрактный класс Enclosure, а также классы для различных типов вольеров.
+
+Класс Enclosure:
+
+java
+Копировать код
+package com.zoopark.enclosures;
+
+public abstract class Enclosure {
+    protected String type;
+    protected int capacity;
+
+    public Enclosure(String type, int capacity) {
+        this.type = type;
+        this.capacity = capacity;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+}
+Класс MammalEnclosure:
+
+java
+Копировать код
+package com.zoopark.enclosures;
+
+public class MammalEnclosure extends Enclosure {
+    public MammalEnclosure(int capacity) {
+        super("Mammal Enclosure", capacity);
+    }
+}
+Класс BirdEnclosure:
+
+java
+Копировать код
+package com.zoopark.enclosures;
+
+public class BirdEnclosure extends Enclosure {
+    public BirdEnclosure(int capacity) {
+        super("Bird Enclosure", capacity);
+    }
+}
