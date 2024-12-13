@@ -1,0 +1,109 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculator {
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Calculator().createAndShowGUI());
+    }
+
+    private void createAndShowGUI() {
+        JFrame frame = new JFrame("Калькулятор");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 400);
+
+        // Создаем текстовое поле для ввода и вывода
+        JTextField display = new JTextField();
+        display.setFont(new Font("Arial", Font.BOLD, 24));
+        display.setHorizontalAlignment(JTextField.RIGHT);
+        display.setEditable(false);
+
+        // Панель с кнопками
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(4, 4, 5, 5));
+
+        // Кнопки калькулятора
+        String[] buttons = {
+                "7", "8", "9", "/",
+                "4", "5", "6", "*",
+                "1", "2", "3", "-",
+                "0", ".", "=", "+"
+        };
+
+        // Слушатель событий для кнопок
+        ActionListener listener = new ActionListener() {
+            StringBuilder currentInput = new StringBuilder();
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String command = e.getActionCommand();
+
+                switch (command) {
+                    case "=":
+                        try {
+                            double result = evaluate(currentInput.toString());
+                            display.setText(String.valueOf(result));
+                            currentInput.setLength(0);
+                        } catch (Exception ex) {
+                            display.setText("Ошибка");
+                            currentInput.setLength(0);
+                        }
+                        break;
+                    case "/": case "*": case "-": case "+":
+                        currentInput.append(" ").append(command).append(" ");
+                        display.setText(currentInput.toString());
+                        break;
+                    default:
+                        currentInput.append(command);
+                        display.setText(currentInput.toString());
+                }
+            }
+        };
+
+        // Добавление кнопок на панель
+        for (String text : buttons) {
+            JButton button = new JButton(text);
+            button.setFont(new Font("Arial", Font.BOLD, 20));
+            button.addActionListener(listener);
+            buttonPanel.add(button);
+        }
+
+        // Добавляем элементы в окно
+        frame.add(display, BorderLayout.NORTH);
+        frame.add(buttonPanel, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+    }
+
+    private double evaluate(String expression) {
+        String[] tokens = expression.split(" ");
+        double result = Double.parseDouble(tokens[0]);
+
+        for (int i = 1; i < tokens.length; i += 2) {
+            String operator = tokens[i];
+            double operand = Double.parseDouble(tokens[i + 1]);
+
+            switch (operator) {
+                case "+":
+                    result += operand;
+                    break;
+                case "-":
+                    result -= operand;
+                    break;
+                case "*":
+                    result *= operand;
+                    break;
+                case "/":
+                    if (operand == 0) {
+                        throw new ArithmeticException("Деление на ноль");
+                    }
+                    result /= operand;
+                    break;
+            }
+        }
+
+        return result;
+    }
+}
