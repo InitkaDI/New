@@ -1,0 +1,64 @@
+import java.util.Scanner;
+
+public class Calculator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Введите выражение (например, 2 * 6.5): ");
+        String input = scanner.nextLine();
+
+        try {
+            double result = calculate(input);
+            System.out.println("Результат: " + result);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+    }
+
+    public static double calculate(String input) {
+        input = input.trim(); // Убираем лишние пробелы
+
+        if (input.contains("+")) {
+            String[] parts = input.split("\\+");
+            return parseAndCalculate(parts, '+');
+        } else if (input.contains("-")) {
+            String[] parts = input.split("-");
+            return parseAndCalculate(parts, '-');
+        } else if (input.contains("*")) {
+            String[] parts = input.split("\\*");
+            return parseAndCalculate(parts, '*');
+        } else if (input.contains("/")) {
+            String[] parts = input.split("/");
+            return parseAndCalculate(parts, '/');
+        } else {
+            throw new IllegalArgumentException("Неверный формат выражения");
+        }
+    }
+
+    private static double parseAndCalculate(String[] parts, char operator) {
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Неверный формат выражения");
+        }
+
+        try {
+            double left = Double.parseDouble(parts[0].trim());
+            double right = Double.parseDouble(parts[1].trim());
+
+            return switch (operator) {
+                case '+' -> left + right;
+                case '-' -> left - right;
+                case '*' -> left * right;
+                case '/' -> {
+                    if (right == 0) {
+                        throw new IllegalArgumentException("Деление на ноль");
+                    }
+                    yield left / right;
+                }
+                default -> throw new IllegalArgumentException("Неизвестный оператор");
+            };
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Неверный формат чисел");
+        }
+    }
+}
