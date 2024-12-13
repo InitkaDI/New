@@ -1,0 +1,70 @@
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+public class FileProcessor {
+
+    // Метод для удаления дублирующихся строк и записи результата
+    public static void removeDuplicates(String inputFile, String outputFile) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(inputFile));
+        Map<String, Integer> lineCounts = new LinkedHashMap<>();
+
+        // Подсчет строк и их количества
+        for (String line : lines) {
+            lineCounts.put(line, lineCounts.getOrDefault(line, 0) + 1);
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+            int duplicatesRemoved = 0;
+
+            for (Map.Entry<String, Integer> entry : lineCounts.entrySet()) {
+                writer.write(entry.getKey());
+                writer.newLine();
+                if (entry.getValue() > 1) {
+                    duplicatesRemoved += entry.getValue() - 1;
+                }
+            }
+
+            // Записываем информацию о количестве удаленных строк
+            writer.write("\nDuplicates removed: " + duplicatesRemoved);
+        }
+
+        System.out.println("Duplicates removed and result written to " + outputFile);
+    }
+
+    // Метод для восстановления сжатой версии в полную
+    public static void restoreFile(String compressedFile, String restoredFile) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(compressedFile));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(restoredFile))) {
+            for (String line : lines) {
+                if (!line.startsWith("Duplicates removed:")) {
+                    writer.write(line);
+                    writer.newLine();
+                }
+            }
+        }
+
+        System.out.println("File restored to " + restoredFile);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.println("Enter the input file path:");
+            String inputFile = scanner.nextLine();
+
+            System.out.println("Enter the output file path for deduplicated content:");
+            String outputFile = scanner.nextLine();
+
+            removeDuplicates(inputFile, outputFile);
+
+            System.out.println("Enter the file path for restoring the content:");
+            String restoredFile = scanner.nextLine();
+
+            restoreFile(outputFile, restoredFile);
+        } catch (IOException e) {
+            System.err.println("Error processing files: " + e.getMessage());
+        }
+    }
+}
