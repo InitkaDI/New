@@ -1,0 +1,119 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+class Card {
+    private final String suit;
+    private final String rank;
+
+    public Card(String suit, String rank) {
+        this.suit = suit;
+        this.rank = rank;
+    }
+
+    public String getSuit() {
+        return suit;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    @Override
+    public String toString() {
+        return rank + " of " + suit;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Card card = (Card) obj;
+        return suit.equals(card.suit) && rank.equals(card.rank);
+    }
+
+    @Override
+    public int hashCode() {
+        return suit.hashCode() + rank.hashCode();
+    }
+}
+
+class Deck {
+    private final List<Card> cards;
+    private final Set<Card> dealtCards;
+
+    public Deck() {
+        String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
+        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
+        cards = new ArrayList<>();
+        dealtCards = new HashSet<>();
+
+        for (String suit : suits) {
+            for (String rank : ranks) {
+                cards.add(new Card(suit, rank));
+            }
+        }
+    }
+
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    public Card dealCard() {
+        if (cards.isEmpty()) {
+            throw new IllegalStateException("No cards left in the deck");
+        }
+        Card dealtCard = cards.remove(0);
+        dealtCards.add(dealtCard);
+        return dealtCard;
+    }
+
+    public void returnCard(Card card) {
+        if (dealtCards.contains(card)) {
+            cards.add(card);
+            dealtCards.remove(card);
+        } else {
+            throw new IllegalArgumentException("Card does not belong to this deck or is already in the deck");
+        }
+    }
+
+    public int remainingCards() {
+        return cards.size();
+    }
+
+    @Override
+    public String toString() {
+        return "Deck with " + cards.size() + " cards remaining.";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Deck deck = new Deck();
+        System.out.println(deck);
+
+        deck.shuffle();
+        System.out.println("Deck shuffled.");
+
+        Card card1 = deck.dealCard();
+        System.out.println("Dealt: " + card1);
+
+        Card card2 = deck.dealCard();
+        System.out.println("Dealt: " + card2);
+
+        System.out.println(deck);
+
+        deck.returnCard(card1);
+        System.out.println("Returned: " + card1);
+
+        System.out.println(deck);
+
+        try {
+            deck.returnCard(card1);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
