@@ -1,0 +1,56 @@
+import java.util.Scanner;
+
+public class CompoundInterestCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Выберите действие:");
+        System.out.println("1 - Вычислить сложный процент");
+        System.out.println("2 - Вычислить необходимый процент для достижения значения");
+
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                calculateCompoundInterest(scanner);
+                break;
+            case 2:
+                calculateRequiredRate(scanner);
+                break;
+            default:
+                System.out.println("Неверный выбор. Завершение программы.");
+        }
+
+        scanner.close();
+    }
+
+    private static void calculateCompoundInterest(Scanner scanner) {
+        System.out.print("Введите начальное число (Principal): ");
+        double principal = scanner.nextDouble();
+
+        System.out.print("Введите процентную ставку (в %): ");
+        double rate = scanner.nextDouble() / 100;
+
+        System.out.print("Введите количество периодов: ");
+        int periods = scanner.nextInt();
+
+        double amount = principal * Math.pow(1 + rate, periods);
+
+        System.out.printf("Результат: %.2f\n", amount);
+    }
+
+    private static void calculateRequiredRate(Scanner scanner) {
+        System.out.print("Введите начальное число (Principal): ");
+        double principal = scanner.nextDouble();
+
+        System.out.print("Введите конечное число (Final Amount): ");
+        double finalAmount = scanner.nextDouble();
+
+        System.out.print("Введите количество периодов: ");
+        int periods = scanner.nextInt();
+
+        double requiredRate = Math.pow(finalAmount / principal, 1.0 / periods) - 1;
+
+        System.out.printf("Необходимый процент: %.2f%%\n", requiredRate * 100);
+    }
+}
